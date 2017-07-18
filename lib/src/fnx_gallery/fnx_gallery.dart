@@ -20,8 +20,15 @@ class FnxGallery implements OnInit, OnDestroy {
   @Input()
   set images(Iterable<Image> value) => _images = value;
 
+  Image _selectedImage = null;
+
+  Image get selectedImage => _selectedImage;
+
   @Input()
-  Image selectedImage = null;
+  set selectedImage (Image i) {
+    _selectedImage = i;
+    selectImage(i);
+  }
 
   Image selectingImage = null;
 
