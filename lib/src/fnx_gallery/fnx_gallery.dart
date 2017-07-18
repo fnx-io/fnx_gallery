@@ -78,6 +78,8 @@ class FnxGallery implements OnInit, OnDestroy {
   FnxGallery();
 
   Future<Null> selectImage(Image i) async {
+    if (selectingImage == i) return;
+
     selectingImage = i;
 
     if (withThumbnails == true) {
@@ -100,9 +102,7 @@ class FnxGallery implements OnInit, OnDestroy {
             // are we still on the same image?
             _captionCache[i] = htmlCaption;
 
-            if (i == selectingImage) {
-              selectedImageCaption = htmlCaption;
-            }
+            selectedImageCaption = htmlCaption;
           });
         }
       }
@@ -110,10 +110,8 @@ class FnxGallery implements OnInit, OnDestroy {
 
     await new Future.delayed(new Duration(milliseconds: 200));
 
-    if (selectingImage == i) {
-      selectedImage = i;
-      (content.nativeElement as Element).style.opacity = "1";
-    }
+    selectedImage = i;
+    (content.nativeElement as Element).style.opacity = "1";
   }
 
   void goLeft() {
