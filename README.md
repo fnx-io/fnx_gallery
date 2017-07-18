@@ -5,11 +5,11 @@ In Dart app you have to prepare images paths and optionally captions:
     List<Image> images = [];
 
     List<String> names = [
-    "dummy-1024x632-FrozenRaspberry.jpg",
-    "dummy-240x160-Sikh.jpg",
-    "dummy-454x280-Kiwi.jpg",
-    "dummy-500x375-Monkey1.jpg",
-    "dummy-600x450-KiwiSolo.jpg"
+      "butterfly.jpg",
+      "tunnel.jpg",
+      "coast.jpg",
+      "flower.jpg",
+      "meadow.jpg",
     ];
 
     ExampleComponent() {
