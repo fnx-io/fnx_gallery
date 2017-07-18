@@ -48,9 +48,8 @@ class FnxGallery implements OnInit, OnDestroy {
   ElementRef caption;
 
   bool get moreImages => images != null && images.length > 1;
-  
-  String _selectedImageCaption = null;
 
+  String _selectedImageCaption = null;
 
   String get selectedImageCaption => _selectedImageCaption;
 
@@ -69,26 +68,37 @@ class FnxGallery implements OnInit, OnDestroy {
 
   int thumbsMargin = 0;
 
+  int startingTouchX = null;
+
+  int lastTouchX = null;
+
+  final int touchMargin = 80;
+
   FnxGallery();
 
   Future<Null> selectImage(Image i) async {
     selectingImage = i;
+
     if (withThumbnails == true) {
       scrollToThumbnail(i);
     }
+
     (content.nativeElement as Element).style.opacity = "0";
     selectedImageCaption = null;
-    if(withCaptions && selectingImage.htmlCaptionProvider != null) {
+
+    if (withCaptions && selectingImage.htmlCaptionProvider != null) {
       selectedImageCaption = _captionCache[selectingImage];
       // if not cached
       if (selectedImageCaption == null) {
         FutureOr<String> caption = selectingImage.htmlCaptionProvider();
+
         if (caption is String) {
           selectedImageCaption = caption;
         } else {
           (caption as Future).then((String htmlCaption) {
             // are we still on the same image?
             _captionCache[i] = htmlCaption;
+
             if (i == selectingImage) {
               selectedImageCaption = htmlCaption;
             }
@@ -96,7 +106,9 @@ class FnxGallery implements OnInit, OnDestroy {
         }
       }
     }
+
     await new Future.delayed(new Duration(milliseconds: 200));
+
     if (selectingImage == i) {
       selectedImage = i;
       (content.nativeElement as Element).style.opacity = "1";
@@ -133,7 +145,7 @@ class FnxGallery implements OnInit, OnDestroy {
         e.stopPropagation();
         e.preventDefault();
         close.emit(true);
-        
+
       } else if (e.keyCode == KeyCode.LEFT) {
         goLeft();
 
@@ -156,6 +168,28 @@ class FnxGallery implements OnInit, OnDestroy {
 
   void goAway() {
     close.emit(true);
+  }
+
+  void touchStart(TouchEvent e) {
+    // Start touch.
+    lastTouchX = startingTouchX = e.touches[0].page.x.toInt();
+  }
+
+  void touchMove(TouchEvent e) {
+    // Update touch.
+    lastTouchX = e.touches[0].page.x.toInt();
+  }
+
+  void touchEnd(TouchEvent e) {
+    // End touch and decide if the swappe will be done.
+    if (startingTouchX != null && startingTouchX > lastTouchX + touchMargin) {
+      goRight();
+    } else if (startingTouchX < lastTouchX - touchMargin) {
+      goLeft();
+    }
+
+    startingTouchX = null;
+    lastTouchX = null;
   }
 
   Future<Null> scrollToThumbnail(Image i) async {
