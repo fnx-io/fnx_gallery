@@ -2,33 +2,37 @@
 
 In Dart app you have to prepare images paths and optionally captions:
 
-    List<Image> images = [];
+```dart
+List<Image> images = [];
 
-    List<String> names = [
-      "butterfly.jpg",
-      "tunnel.jpg",
-      "coast.jpg",
-      "flower.jpg",
-      "meadow.jpg",
-    ];
+List<String> names = [
+  "butterfly.jpg",
+  "tunnel.jpg",
+  "coast.jpg",
+  "flower.jpg",
+  "meadow.jpg",
+];
 
-    ExampleComponent() {
-      for (var name in names) {
-        name = "imgs/$name";
-        Image i = new Image(name, thumbSrc: name+"?thumg=1", htmlCaptionProvider: () {
-          return new Future.delayed(new Duration(milliseconds: 600)).then((_)=>"$name");
-        });
-        images.add(i);
-      }
-    }
+ExampleComponent() {
+  for (var name in names) {
+    name = "imgs/$name";
+    Image i = new Image(name, thumbSrc: name+"?thumg=1", htmlCaptionProvider: () {
+      return new Future.delayed(new Duration(milliseconds: 600)).then((_)=>"$name");
+    });
+    images.add(i);
+  }
+}
+```
 
 In template use it like this:
 
-    <fnx-gallery
-        [images]="images"
-        [withCaptions]="true"
-        [withThumbnails]="true"></fnx-gallery>
-		...
+```html
+<fnx-gallery
+    [images]="images"
+    [withCaptions]="true"
+    [withThumbnails]="true"></fnx-gallery>
+    ...
+```
 
 See [examples](http://demo.fnx.io/fnx_gallery-examples/).
 
@@ -43,16 +47,22 @@ simple `position: fixed;` element which you can use as gallery.
 
 Specify dependency in pubspec.yaml:
 
-	dependencies:
-	  fnx_gallery: ^0.0.6
+```yaml
+dependencies:
+  fnx_gallery: ^0.0.6
+```
 
 Run `pub get`, import it in your html:
 
-	<link rel="import" href="packages/fnx_gallery/fnx_gallery.html">
+```html
+<link rel="import" href="packages/fnx_gallery/fnx_gallery.html">
+```
 
 ... and in your "index.dart" (or whatever is the name of your main script):
 
-	import 'package:fnx_gallery/fnx_gallery.dart';
+```dart
+import 'package:fnx_gallery/fnx_gallery.dart';
+```
 
 ## Contact
 

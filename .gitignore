@@ -2,3 +2,4 @@
 .packages
 .pub/
 fnx_gallery.iml
+.pubspec.lock

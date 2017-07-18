@@ -185,7 +185,7 @@ class FnxGallery implements OnInit, OnDestroy {
   }
 
   void touchEnd(TouchEvent e) {
-    // End touch and decide if the swappe will be done.
+    // End touch and decide if the swap will be done.
     if (startingTouchX != null && startingTouchX > lastTouchX + touchMargin) {
       goRight();
     } else if (startingTouchX < lastTouchX - touchMargin) {
