@@ -23,7 +23,7 @@ class ExampleComponent implements OnInit {
     for (var name in names) {
       name = "imgs/$name";
       Image i = new Image(name, thumbSrc: name+"?thumg=1", htmlCaptionProvider: () {
-        return new Future.delayed(new Duration(milliseconds: 600)).then((_)=>"$name");
+        return new Future.delayed(new Duration(milliseconds: 600)).then((_) => "$name");
       });
       images.add(i);
     }

@@ -55,6 +55,7 @@ class FnxGallery implements OnInit, OnDestroy {
 
   set selectedImageCaption(String value) {
     _selectedImageCaption = value;
+
     if (value != null) {
       (caption.nativeElement as Element).setInnerHtml(value, treeSanitizer: NodeTreeSanitizer.trusted);
     } else {
@@ -117,7 +118,9 @@ class FnxGallery implements OnInit, OnDestroy {
 
   void goLeft() {
     if (images.isEmpty || images.length == 1) return;
+
     int ind = images.indexOf(selectedImage);
+
     if (ind == 0) {
       selectImage(images.last);
     } else {
@@ -127,7 +130,9 @@ class FnxGallery implements OnInit, OnDestroy {
 
   void goRight() {
     if (images.isEmpty || images.length == 1) return;
+
     int ind = images.indexOf(selectedImage);
+
     if (ind == images.length - 1) {
       selectImage(images.first);
     } else {
@@ -140,6 +145,7 @@ class FnxGallery implements OnInit, OnDestroy {
     if (selectedImage == null) {
       selectImage(images.first);
     }
+
     keySubscription = document.onKeyDown.listen((KeyboardEvent e) {
       if (e.keyCode == KeyCode.ESC) {
         e.stopPropagation();
