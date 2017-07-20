@@ -22,9 +22,7 @@ List<String> names = [
 ExampleComponent() {
   for (var name in names) {
     name = "imgs/$name";
-    Image i = new Image(name, thumbSrc: name+"?thumg=1", htmlCaptionProvider: () {
-      return new Future.delayed(new Duration(milliseconds: 600)).then((_)=>"$name");
-    });
+    Image i = new Image(name, thumbSrc: name+"?thumg=1", htmlCaptionProvider: () => name);
     images.add(i);
   }
 }
@@ -39,6 +37,15 @@ In your template, you can use the component like this:
     [withThumbnails]="true"></fnx-gallery>
     ...
 ```
+
+## Caption provider
+
+htmlCaptionProvider is a function which returns `FutureOr<String>` and you can use is to
+fetch your image caption from an asynchronous source (server, etc.).
+
+Caption is handled as HTML, and is displayed using `innerHtml` with `NodeTreeSanitizer.trusted`,
+please make sure your caption can be TRUSTED! 
+
 
 ## Navigation
 
@@ -73,12 +80,11 @@ You use some of these AngularDart inputs to modify the element:
 
 | input name     | data type       | purpose                                       |
 |:---------------|:----------------|:----------------------------------------------|
-| images         | List\<Image\>   | List of images of the gallery.                |
-| selectedImage  | Image           | Selected image object, default 0th.           |
-| withCaptions   | boolean         | Show captions below the images.               |
-| withThumbnails | boolean         | Show thumbnails at the bottom of the gallery. |
+| `images`         | List\<Image\>   | List of images of the gallery.                |
+| `selectedImage`  | Image           | Selected image object, default 0th.           |
+| `withCaptions`   | bool         | Show captions below the images.               |
+| `withThumbnails` | bool         | Show thumbnails at the bottom of the gallery. |
 
 ## Contact
 
-Feel free to contact me at `<user-element>tomucha</user-element><host-element separator="@">gmail.com</host-element>`,
-or fill-in a bugreport on [Github issue tracking](https://github.com/fnx-io/fnx_gallery/issues).
+Fill-in a bugreport or feature request on [Github issue tracking](https://github.com/fnx-io/fnx_gallery/issues).

@@ -1,8 +1,10 @@
 name: fnx_gallery
 description: Easy to use AngularDart gallery component.
 version: 0.0.7
-author: Tomucha <tomucha@gmail.com>
-#homepage: https://www.example.com
+authors:
+  - Tomucha <tomucha@gmail.com>
+  - Honza Bittner <the@honzabittner.cz>
+homepage: https://github.com/fnx-io/fnx_gallery
 
 environment:
   sdk: '>=1.0.0 <2.0.0'
