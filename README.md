@@ -38,7 +38,7 @@ See [examples](http://demo.fnx.io/fnx_gallery-examples/).
 
 ## Navigation
 
-Your user can navigate through your gallery by simply pressing the left/right buttons or on mobile also by swapping to left or right.
+Your user can navigate through your gallery by simply pressing the left/right buttons or on mobile also by swipping to left or right.
 
 ## fnx-gallery element
 
