@@ -9,6 +9,8 @@ import 'package:fnx_gallery/fnx_gallery.dart';
 )
 class ExampleComponent implements OnInit {
 
+  bool visibleGallery = true;
+
   List<Image> images = [];
 
   List<String> names = [

@@ -70,9 +70,8 @@ import 'package:fnx_gallery/fnx_gallery.dart';
 
 ### Closing the gallery
 
-The gallery can be closed using `goAway()` method which emits `close` output event of type `EventEmitter<bool>`.
-
-It is recommended to use `*ngIf` to show and hide the gallery.
+We recommended to use `*ngIf` to show and hide the gallery. `<fnx-gallery>` emits `(close)` event, which indicates
+that the user clicked on the close button (or pressed ESC key etc.). Hide the gallery after this event.
 
 ### Element inputs
 

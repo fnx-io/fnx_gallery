@@ -1,6 +1,10 @@
 <p>
   <fnx-gallery
+          *ngIf="visibleGallery"
+          (close)="visibleGallery = false"
           [images]="images"
           [withCaptions]="true"
           [withThumbnails]="true"></fnx-gallery>
+
+    <button (click)="visibleGallery = true">show gallery</button>
 </p>
