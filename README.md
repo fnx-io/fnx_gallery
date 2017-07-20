@@ -73,7 +73,7 @@ You use some of these AngularDart inputs to modify the element:
 
 | input name     | data type       | purpose                                       |
 |:---------------|:----------------|:----------------------------------------------|
-| images         | Iterable<Image> | List of images of the gallery.                |
+| images         | List\<Image\>   | List of images of the gallery.                |
 | selectedImage  | Image           | Selected image object, default 0th.           |
 | withCaptions   | boolean         | Show captions below the images.               |
 | withThumbnails | boolean         | Show thumbnails at the bottom of the gallery. |
