@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html';
+import 'dart:js';
 import 'package:angular2/core.dart';
 import 'package:fnx_gallery/src/image.dart';
 
@@ -27,7 +28,7 @@ class FnxGallery implements OnInit, OnDestroy {
   @Input()
   set selectedImage (Image i) {
     _selectedImage = i;
-    selectImage(i);
+    selectImage(i, false);
   }
 
   Image selectingImage = null;
@@ -37,6 +38,9 @@ class FnxGallery implements OnInit, OnDestroy {
 
   @Input()
   bool withThumbnails = true;
+
+  @Input()
+  bool withFullscreen = false;
 
   @Output()
   EventEmitter<bool> close = new EventEmitter<bool>();
@@ -60,12 +64,14 @@ class FnxGallery implements OnInit, OnDestroy {
   String get selectedImageCaption => _selectedImageCaption;
 
   set selectedImageCaption(String value) {
-    _selectedImageCaption = value;
+    if (withCaptions) {
+      _selectedImageCaption = value;
 
-    if (value != null) {
-      (caption.nativeElement as Element).setInnerHtml(value, treeSanitizer: NodeTreeSanitizer.trusted);
-    } else {
-      (caption.nativeElement as Element).setInnerHtml("");
+      if (value != null) {
+       (caption.nativeElement as Element).setInnerHtml(value, treeSanitizer: NodeTreeSanitizer.trusted);
+      } else {
+       (caption.nativeElement as Element).setInnerHtml("");
+      }
     }
   }
 
@@ -83,8 +89,47 @@ class FnxGallery implements OnInit, OnDestroy {
 
   FnxGallery();
 
-  Future<Null> selectImage(Image i) async {
-    if (selectingImage == i) return;
+  /// Opens the full screen on [element].
+  void _openFullscreen(Node element) {
+    var elem = new JsObject.fromBrowserObject(element);
+
+    if (elem.hasProperty("requestFullscreen")) {
+      elem.callMethod("requestFullscreen");
+    } else {
+      List<String> vendors = ['moz', 'webkit', 'ms', 'o'];
+
+      for (String vendor in vendors) {
+        String vendorFullscreen = "${vendor}RequestFullscreen";
+
+        if (vendor == 'moz') {
+          vendorFullscreen = "${vendor}RequestFullScreen";
+        }
+
+        if (elem.hasProperty(vendorFullscreen)) {
+          elem.callMethod(vendorFullscreen);
+          return;
+        }
+      }
+    }
+  }
+
+  /// Exits the full screen on [element].
+  void _exitFullscreen(Node element) {
+    var elem = new JsObject.fromBrowserObject(element);
+
+    if (elem.hasProperty("exitFullscreen")) {
+      elem.callMethod("exitFullscreen");
+    } else if (elem.hasProperty("mozCancelFullScreen")) {
+      elem.callMethod("mozCancelFullScreen");
+    } else if (elem.hasProperty("webkitExitFullscreen")) {
+      elem.callMethod("webkitExitFullscreen");
+    }
+  }
+
+  Future<Null> selectImage(Image i, [bool selectImage = true]) async {
+    if (selectImage && withFullscreen) {
+      _openFullscreen(document.body);
+    }
 
     selectingImage = i;
 
@@ -116,7 +161,10 @@ class FnxGallery implements OnInit, OnDestroy {
 
     await new Future.delayed(new Duration(milliseconds: 200));
 
-    selectedImage = i;
+    if (selectImage) {
+      selectedImage = i;
+    }
+
     (content.nativeElement as Element).style.opacity = "1";
   }
 
@@ -177,21 +225,25 @@ class FnxGallery implements OnInit, OnDestroy {
   }
 
   void goAway() {
+    if (withFullscreen) {
+      _exitFullscreen(document);
+    }
+
     close.emit(true);
   }
 
+  /// Starts the touch event with setting the starting x position.
   void touchStart(TouchEvent e) {
-    // Start touch.
     lastTouchX = startingTouchX = e.touches[0].page.x.toInt();
   }
 
+  /// Updates the last touch x position.
   void touchMove(TouchEvent e) {
-    // Update touch.
     lastTouchX = e.touches[0].page.x.toInt();
   }
 
+  /// Decides if the touch event was a swipe and to which side.
   void touchEnd(TouchEvent e) {
-    // End touch and decide if the swap will be done.
     if (startingTouchX != null && startingTouchX > lastTouchX + touchMargin) {
       goRight();
     } else if (startingTouchX < lastTouchX - touchMargin) {
