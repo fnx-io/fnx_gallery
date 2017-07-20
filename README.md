@@ -63,7 +63,7 @@ import 'package:fnx_gallery/fnx_gallery.dart';
 
 ### Closing the gallery
 
-The gallery can be closed using `goAway()` method which emites `close` output of type `EventEmitter<bool>`.
+The gallery can be closed using `goAway()` method which emits `close` output event of type `EventEmitter<bool>`.
 
 It is recommended to use `*ngIf` to show and hide the gallery.
 
@@ -77,7 +77,6 @@ You use some of these AngularDart inputs to modify the element:
 | selectedImage  | Image           | Selected image object, default 0th.           |
 | withCaptions   | boolean         | Show captions below the images.               |
 | withThumbnails | boolean         | Show thumbnails at the bottom of the gallery. |
-| withFullscreen | boolean         | Open fullscreen while viewing the gallery.    |
 
 ## Contact
 

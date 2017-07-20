@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:html';
-import 'dart:js';
 import 'package:angular2/core.dart';
 import 'package:fnx_gallery/src/image.dart';
 
@@ -16,7 +15,7 @@ class FnxGallery implements OnInit, OnDestroy {
 
   StreamSubscription<KeyboardEvent> keySubscription;
 
-  List<Image> get images => _images??EMPTY;
+  List<Image> get images => _images ?? EMPTY;
 
   @Input()
   set images(Iterable<Image> value) => _images = value;
@@ -38,9 +37,6 @@ class FnxGallery implements OnInit, OnDestroy {
 
   @Input()
   bool withThumbnails = true;
-
-  @Input()
-  bool withFullscreen = false;
 
   @Output()
   EventEmitter<bool> close = new EventEmitter<bool>();
@@ -89,48 +85,7 @@ class FnxGallery implements OnInit, OnDestroy {
 
   FnxGallery();
 
-  /// Opens the full screen on [element].
-  void _openFullscreen(Node element) {
-    var elem = new JsObject.fromBrowserObject(element);
-
-    if (elem.hasProperty("requestFullscreen")) {
-      elem.callMethod("requestFullscreen");
-    } else {
-      List<String> vendors = ['moz', 'webkit', 'ms', 'o'];
-
-      for (String vendor in vendors) {
-        String vendorFullscreen = "${vendor}RequestFullscreen";
-
-        if (vendor == 'moz') {
-          vendorFullscreen = "${vendor}RequestFullScreen";
-        }
-
-        if (elem.hasProperty(vendorFullscreen)) {
-          elem.callMethod(vendorFullscreen);
-          return;
-        }
-      }
-    }
-  }
-
-  /// Exits the full screen on [element].
-  void _exitFullscreen(Node element) {
-    var elem = new JsObject.fromBrowserObject(element);
-
-    if (elem.hasProperty("exitFullscreen")) {
-      elem.callMethod("exitFullscreen");
-    } else if (elem.hasProperty("mozCancelFullScreen")) {
-      elem.callMethod("mozCancelFullScreen");
-    } else if (elem.hasProperty("webkitExitFullscreen")) {
-      elem.callMethod("webkitExitFullscreen");
-    }
-  }
-
   Future<Null> selectImage(Image i, [bool selectImage = true]) async {
-    if (selectImage && withFullscreen) {
-      _openFullscreen(document.body);
-    }
-
     selectingImage = i;
 
     if (withThumbnails == true) {
@@ -225,10 +180,6 @@ class FnxGallery implements OnInit, OnDestroy {
   }
 
   void goAway() {
-    if (withFullscreen) {
-      _exitFullscreen(document);
-    }
-
     close.emit(true);
   }
 
