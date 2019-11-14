@@ -1,16 +1,19 @@
 import 'dart:async';
 import 'dart:html';
-import 'package:angular2/core.dart';
-import 'package:fnx_gallery/src/image.dart';
 
-const EMPTY = const <Image>[];
+import 'package:angular/angular.dart';
+import 'package:angular/core.dart';
+import 'package:fnx_gallery/src/image.dart';
+import 'package:pedantic/pedantic.dart';
+
+const EMPTY = <Image>[];
 
 @Component(
     selector: 'fnx-gallery',
     templateUrl: 'fnx_gallery.html',
-    styleUrls: const <String>['fnx_gallery.css'])
+    directives: [coreDirectives],
+    styleUrls: <String>['fnx_gallery.css'])
 class FnxGallery implements OnInit, OnDestroy {
-
   Iterable<Image> _images;
 
   StreamSubscription<KeyboardEvent> keySubscription;
@@ -20,17 +23,17 @@ class FnxGallery implements OnInit, OnDestroy {
   @Input()
   set images(Iterable<Image> value) => _images = value;
 
-  Image _selectedImage = null;
+  Image _selectedImage;
 
   Image get selectedImage => _selectedImage;
 
   @Input()
-  set selectedImage (Image i) {
+  set selectedImage(Image i) {
     _selectedImage = i;
     selectImage(i, false);
   }
 
-  Image selectingImage = null;
+  Image selectingImage;
 
   @Input()
   bool withCaptions = false;
@@ -38,48 +41,52 @@ class FnxGallery implements OnInit, OnDestroy {
   @Input()
   bool withThumbnails = true;
 
+  StreamController<bool> closeController = StreamController.broadcast();
   @Output()
-  EventEmitter<bool> close = new EventEmitter<bool>();
+  Stream<bool> get close => closeController.stream;
 
+  StreamController<bool> selectController = StreamController.broadcast();
   @Output()
-  EventEmitter<Image> select = new EventEmitter<Image>();
+  Stream<bool> get select => selectController.stream;
 
   @ViewChild("content")
-  ElementRef content;
+  Element content;
 
   @ViewChild("thumbs")
-  ElementRef thumbs;
+  Element thumbs;
 
   @ViewChild("caption")
-  ElementRef caption;
+  Element caption;
 
   bool get moreImages => images != null && images.length > 1;
 
-  String _selectedImageCaption = null;
+  String _selectedImageCaption;
 
   String get selectedImageCaption => _selectedImageCaption;
 
   set selectedImageCaption(String value) {
     if (withCaptions) {
       _selectedImageCaption = value;
-
-      if (value != null) {
-       (caption.nativeElement as Element).setInnerHtml(value, treeSanitizer: NodeTreeSanitizer.trusted);
-      } else {
-       (caption.nativeElement as Element).setInnerHtml("");
+      if (caption != null) {
+        if (value != null) {
+          caption.setInnerHtml(value, treeSanitizer: NodeTreeSanitizer.trusted);
+        } else {
+          caption.setInnerHtml("");
+        }
       }
     }
   }
 
-  String get selectedImageSrcCss => selectedImage == null ? "" : "url(${selectedImage.imgSrc})";
+  String get selectedImageSrcCss =>
+      selectedImage == null ? "" : "url(${selectedImage.imgSrc})";
 
   Map<Image, String> _captionCache = {};
 
   int thumbsMargin = 0;
 
-  int startingTouchX = null;
+  int startingTouchX;
 
-  int lastTouchX = null;
+  int lastTouchX;
 
   final int touchMargin = 80;
 
@@ -89,10 +96,10 @@ class FnxGallery implements OnInit, OnDestroy {
     selectingImage = i;
 
     if (withThumbnails == true) {
-      scrollToThumbnail(i);
+      unawaited(scrollToThumbnail(i));
     }
 
-    (content.nativeElement as Element).style.opacity = "0";
+    content.style.opacity = "0";
     selectedImageCaption = null;
 
     if (withCaptions && selectingImage.htmlCaptionProvider != null) {
@@ -104,23 +111,22 @@ class FnxGallery implements OnInit, OnDestroy {
         if (caption is String) {
           selectedImageCaption = caption;
         } else {
-          (caption as Future).then((String htmlCaption) {
+          unawaited((caption as Future<String>).then((String htmlCaption) {
             // are we still on the same image?
             _captionCache[i] = htmlCaption;
-
             selectedImageCaption = htmlCaption;
-          });
+          }));
         }
       }
     }
 
-    await new Future.delayed(new Duration(milliseconds: 200));
+    await Future.delayed(Duration(milliseconds: 200));
 
     if (selectImage) {
       selectedImage = i;
     }
 
-    (content.nativeElement as Element).style.opacity = "1";
+    content.style.opacity = "1";
   }
 
   void goLeft() {
@@ -157,14 +163,11 @@ class FnxGallery implements OnInit, OnDestroy {
       if (e.keyCode == KeyCode.ESC) {
         e.stopPropagation();
         e.preventDefault();
-        close.emit(true);
-
+        closeController.add(true);
       } else if (e.keyCode == KeyCode.LEFT) {
         goLeft();
-
       } else if (e.keyCode == KeyCode.SPACE) {
         goRight();
-
       } else if (e.keyCode == KeyCode.RIGHT) {
         goRight();
       }
@@ -180,7 +183,7 @@ class FnxGallery implements OnInit, OnDestroy {
   }
 
   void goAway() {
-    close.emit(true);
+    closeController.add(true);
   }
 
   /// Starts the touch event with setting the starting x position.
@@ -207,7 +210,7 @@ class FnxGallery implements OnInit, OnDestroy {
 
   Future<Null> scrollToThumbnail(Image i) async {
     /*
-    await new Future.delayed(new Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 100));
     num thumbsWidth = 0;
     num selectedPosition = 0;
     Element container = (thumbs.nativeElement as Element);
@@ -217,7 +220,7 @@ class FnxGallery implements OnInit, OnDestroy {
     });
     print(thumbsWidth);
 
-    thumbsMargin = (new Random().nextInt(400)-200);
+    thumbsMargin = (Random().nextInt(400)-200);
     */
   }
 }

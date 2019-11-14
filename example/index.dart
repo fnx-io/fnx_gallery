@@ -1,8 +1,7 @@
-import 'example_component.dart';
-import 'package:angular2/platform/browser.dart';
+import 'package:angular/angular.dart';
+
+import 'example_component.template.dart';
 
 void main() {
-
-  bootstrap(ExampleComponent);
-
+  runApp(ExampleComponentNgFactory);
 }

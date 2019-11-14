@@ -11,6 +11,4 @@ import 'src/fnx_gallery/fnx_gallery.dart';
 export 'src/fnx_gallery/fnx_gallery.dart';
 export 'src/image.dart';
 
-const List COMPONENTS = const [
-  FnxGallery
-];
+const List COMPONENTS = [FnxGallery];

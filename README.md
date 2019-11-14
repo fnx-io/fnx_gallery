@@ -22,7 +22,7 @@ List<String> names = [
 ExampleComponent() {
   for (var name in names) {
     name = "imgs/$name";
-    Image i = new Image(name, thumbSrc: name+"?thumg=1", htmlCaptionProvider: () => name);
+    Image i = Image(name, thumbSrc: name+"?thumg=1", htmlCaptionProvider: () => name);
     images.add(i);
   }
 }
@@ -59,7 +59,7 @@ Specify dependency in pubspec.yaml:
 
 ```yaml
 dependencies:
-  fnx_gallery: ^0.0.7
+  fnx_gallery: ^1.0.0
 ```
 
 Run `pub get` and in your "index.dart" (or whatever is the name of your main script):
@@ -81,7 +81,7 @@ You use some of these AngularDart inputs to modify the element:
 |:---------------|:----------------|:----------------------------------------------|
 | `images`         | List\<Image\>   | List of images of the gallery.                |
 | `selectedImage`  | Image           | Selected image object, default 0th.           |
-| `withCaptions`   | bool         | Show captions below the images.               |
+| `withCaptions`   | bool         | Show captions bellow the images.               |
 | `withThumbnails` | bool         | Show thumbnails at the bottom of the gallery. |
 
 ## Contact
