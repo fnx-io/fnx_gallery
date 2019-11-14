@@ -1,6 +1,8 @@
 name: fnx_gallery
 description: Easy to use AngularDart gallery component.
-version: 1.0.0
+  Displays one big image with list of thumbnails bellow.
+  Easily embedable into any AngularDart app.
+version: 1.0.1
 authors:
   - Tomucha <tomucha@gmail.com>
   - Honza Bittner <the@honzabittner.cz>
